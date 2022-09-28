@@ -58,27 +58,13 @@
         <div class="jumbotron">
           <h1>Vista de Productos</h1>
           <br />
-
-          {{#if hayProductos}}
             <div class="table-responsive">
               <table class="table table-dark">
                 <tr> <th>Nombre</th> <th>Precio</th> <th>Foto</th></tr>
-                {{#each productos}}
-                  <tr>
-                    <td>{{this.title}}</td>
-                    <td>${{this.price}}</td>
-                    <td><img
-                        width="50"
-                        src={{this.thumbnail}}
-                        alt="not found"
-                      /></td>
-                  </tr>
-                {{/each}}
               </table>
-            </div>
-          {{else}}
-            <h3 class="alert alert-warning">No se encontraron productos</h3>
-          {{/if}}
+              <table class="table table-dark" id="vista_productos">
+              </table>
+            </div>    
         </div>
         <div>
           <h1>Centro de mensajes</h1>
@@ -91,20 +77,54 @@
           </form>
         </div>
 
-        <script>
-          const socket = io.connect(); 
-          socket.on("messages", (data) => {
-          render(data); }); function render(data) { const html = data
-          .map((elemento) => { return `<div> <strong
-          style='color:blue'>${elemento.author}</strong> <em
-          style='color:brown'>${elemento.date}</em>: <em
-          style='color:green; font-family: Italic'>${elemento.text}</em></div> `; }) .join(" ");
-          document.getElementById("mensajes").innerHTML = html; } function
-          addMessage(e) { const mensaje = { author:
-          document.getElementById("username").value, text:
-          document.getElementById("texto").value, }; socket.emit("new-message",
-          mensaje); return false; }
-        </script>
+        <script> 
+                          // Chat websocket
+                const socket = io.connect();
+                socket.on("messages", (data) => {
+                  renderChat(data);
+                });
+                function renderChat(data) {
+                  const html = data
+                    .map((elemento) => {
+                      return `<div> <strong
+                style='color:blue'>${elemento.author}</strong> <em
+                style='color:brown'>${elemento.date}</em>: <em
+                style='color:green; font-family: Italic'>${elemento.text}</em></div> `;
+                    })
+                    .join(" ");
+                  document.getElementById("mensajes").innerHTML = html;
+                }
+                function addMessage(e) {
+                  const mensaje = {
+                    author: document.getElementById("username").value,
+                    text: document.getElementById("texto").value,
+                  };
+                  socket.emit("new-message", mensaje);
+                  return false;
+                }
+
+                // Productos websocket
+                socket.on("lista-productos", (prods) => {
+                  renderProds(prods);
+                });
+                function renderProds(data) {
+                  const html = data
+                    .map((prod) => {
+                      return `<tr>
+                    <td>${prod.title}</td>
+                    <td>${prod.price}</td>
+                    <td><img
+                        width="50"
+                        src=${prod.thumbnail}
+                        alt="not found"
+                      /></td>
+                  </tr>`;
+                    })
+                    .join(" ");
+                  document.getElementById("vista_productos").innerHTML = html;
+                }
+                
+        </script>        
       </div>
     </div>
   </body>

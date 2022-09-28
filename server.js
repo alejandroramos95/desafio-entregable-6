@@ -1,7 +1,6 @@
 const fs = require("fs");
 const moment = require("moment");
 const express = require("express");
-const handlebars = require("express-handlebars");
 const { Server: HttpServer } = require("http");
 const { Server: IOServer } = require("socket.io");
 const Contenedor = require("./api/Contenedor");
@@ -15,16 +14,6 @@ const io = new IOServer(httpServer);
 
 // Public statement
 app.use(express.static("public"));
-
-// Handlebars
-app.engine(
-  "hbs",
-  handlebars({
-    extname: ".hbs",
-  })
-);
-app.set("view engine", "hbs");
-app.set("views", "views");
 
 // Routes usage
 app.use("/", routes);
@@ -62,14 +51,8 @@ routes.delete("/api/productos/borrar/:id", (req, res) => {
   res.json(producto);
 });
 
-routes.get("/", (req, res) => {
-  let prods = productos.getAll();
-
-  res.render("index", {
-    layout: false,
-    productos: prods,
-    hayProductos: prods.length,
-  });
+app.get("/:file", (req, res) => {
+  res.sendFile(__dirname + `/public/${req.params.file}`);
 });
 
 // Server up
@@ -80,7 +63,9 @@ const messages = [];
 
 io.on("connection", (socket) => {
   console.log("Se conectó un nuevo usuario", socket.id);
-  
+ 
+  io.sockets.emit("lista-productos", productos.getAll());
+
   socket.emit("messages", messages);
 
   socket.on(
