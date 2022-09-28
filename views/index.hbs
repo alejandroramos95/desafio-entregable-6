@@ -10,15 +10,9 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="css/estilos.css" />
-     <script src="/socket.io/socket.io.js"></script>
-    <script src="../public/js/index.js"></script>
+    <script src="/socket.io/socket.io.js" charset="utf-8"></script>
   </head>
   <body>
-
-    <style>
-      .table td, .table th { vertical-align: middle; } h1 { color: blue; } hr {
-      background-color: #ddd; } .jumbotron { min-height: 100vh; }
-    </style>
     <div class="container mt-3">
       <div class="jumbotron">
         <h1>Ingrese Producto</h1>
@@ -89,5 +83,10 @@
 
       </div>
     </div>
+    <script>
+console.log("hola")
+const socket = io.connect();
+console.log("chau", socket)
+</script>
   </body>
 </html>

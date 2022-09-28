@@ -22,7 +22,7 @@ app.engine(
   })
 );
 app.set("view engine", "hbs");
-app.set("views", "./views");
+app.set("views", "views");
 
 // Routes usage
 app.use("/", routes);
@@ -70,16 +70,11 @@ routes.get("/", (req, res) => {
 	});
 });
 
+// Server up
 
-// Importing js file to be usable in hbs
-const path = require('path')
-app.use('/js', express.static(path.join(__dirname, 'public')))
+httpServer.listen(PORT, () => console.log("SERVER ON"));
 
 // Connection with user
 io.on("connection", (socket) => {
 	console.log("Nuevo cliente conectado", socket.id);
 });
-
-// Server up
-
-httpServer.listen(PORT, () => console.log("SERVER ON"));
