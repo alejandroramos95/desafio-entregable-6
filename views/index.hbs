@@ -80,13 +80,32 @@
             <h3 class="alert alert-warning">No se encontraron productos</h3>
           {{/if}}
         </div>
+        <div>
+          <h1>Centro de mensajes</h1>
+          <form onsubmit="return addMessage(this)">
+            <input type="text" id="username" placeholder="Email *" required />
+            <p></p>
+            <div id="mensajes"></div>
+            <input type="text" id="texto" placeholder="Mensaje" />
+            <input type="submit" value="Enviar" />
+          </form>
+        </div>
 
+        <script>
+          const socket = io.connect(); 
+          socket.on("messages", (data) => {
+          render(data); }); function render(data) { const html = data
+          .map((elemento) => { return `<div> <strong
+          style='color:blue'>${elemento.author}</strong> <em
+          style='color:brown'>${elemento.date}</em>: <em
+          style='color:green; font-family: Italic'>${elemento.text}</em></div> `; }) .join(" ");
+          document.getElementById("mensajes").innerHTML = html; } function
+          addMessage(e) { const mensaje = { author:
+          document.getElementById("username").value, text:
+          document.getElementById("texto").value, }; socket.emit("new-message",
+          mensaje); return false; }
+        </script>
       </div>
     </div>
-    <script>
-console.log("hola")
-const socket = io.connect();
-console.log("chau", socket)
-</script>
   </body>
 </html>
