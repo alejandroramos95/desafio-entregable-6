@@ -70,8 +70,12 @@ routes.get("/", (req, res) => {
 	});
 });
 
-// Connection with user
 
+// Importing js file to be usable in hbs
+const path = require('path')
+app.use('/js', express.static(path.join(__dirname, 'public')))
+
+// Connection with user
 io.on("connection", (socket) => {
 	console.log("Nuevo cliente conectado", socket.id);
 });
