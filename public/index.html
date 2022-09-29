@@ -10,7 +10,7 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="css/estilos.css" />
-    <script src="/socket.io/socket.io.js" charset="utf-8"></script>
+    <script src="/socket.io/socket.io.js"></script>
   </head>
   <body>
     <div class="container mt-3">
@@ -76,41 +76,42 @@
             <input type="submit" value="Enviar" />
           </form>
         </div>
-
-        <script> 
-                          // Chat websocket
-                const socket = io.connect();
-                socket.on("messages", (data) => {
-                  renderChat(data);
-                });
-                function renderChat(data) {
-                  const html = data
-                    .map((elemento) => {
-                      return `<div> <strong
+      </div>
+    </div>
+    <script>
+      // Chat websocket
+const socket = io.connect()
+socket.on('messages', (data) => {
+  renderChat(data)
+})
+function renderChat(data) {
+  const html = data
+    .map((elemento) => {
+      return `<div> <strong
                 style='color:blue'>${elemento.author}</strong> <em
                 style='color:brown'>${elemento.date}</em>: <em
-                style='color:green; font-family: Italic'>${elemento.text}</em></div> `;
-                    })
-                    .join(" ");
-                  document.getElementById("mensajes").innerHTML = html;
-                }
-                function addMessage(e) {
-                  const mensaje = {
-                    author: document.getElementById("username").value,
-                    text: document.getElementById("texto").value,
-                  };
-                  socket.emit("new-message", mensaje);
-                  return false;
-                }
+                style='color:green; font-family: Italic'>${elemento.text}</em></div> `
+    })
+    .join(' ')
+  document.getElementById('mensajes').innerHTML = html
+}
+function addMessage(e) {
+  const mensaje = {
+    author: document.getElementById('username').value,
+    text: document.getElementById('texto').value,
+  }
+  socket.emit('new-message', mensaje)
+  return false
+}
 
-                // Productos websocket
-                socket.on("lista-productos", (prods) => {
-                  renderProds(prods);
-                });
-                function renderProds(data) {
-                  const html = data
-                    .map((prod) => {
-                      return `<tr>
+// Productos websocket
+socket.on('lista-productos', (prods) => {
+  renderProds(prods)
+})
+function renderProds(data) {
+  const html = data
+    .map((prod) => {
+      return `<tr>
                     <td>${prod.title}</td>
                     <td>${prod.price}</td>
                     <td><img
@@ -118,14 +119,12 @@
                         src=${prod.thumbnail}
                         alt="not found"
                       /></td>
-                  </tr>`;
-                    })
-                    .join(" ");
-                  document.getElementById("vista_productos").innerHTML = html;
-                }
-                
-        </script>        
-      </div>
-    </div>
+                  </tr>`
+    })
+    .join(' ')
+  document.getElementById('vista_productos').innerHTML = html
+}
+
+    </script>
   </body>
 </html>

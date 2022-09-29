@@ -35,19 +35,22 @@ routes.get("/api/productos/listar/:id", (req, res) => {
 routes.post("/api/productos/guardar", (req, res) => {
   let producto = req.body;
   productos.save(producto);
-  res.redirect("/");
+  refreshProducts()
+  res.redirect('/')
 });
 
 routes.put("/api/productos/actualizar/:id", (req, res) => {
   let { id } = req.params;
   let producto = req.body;
   productos.updateItem(producto, id);
+  refreshProducts()
   res.json(producto);
 });
 
 routes.delete("/api/productos/borrar/:id", (req, res) => {
   let { id } = req.params;
   let producto = productos.deleteById(id);
+  refreshProducts()
   res.json(producto);
 });
 
@@ -55,6 +58,10 @@ app.get("/:file", (req, res) => {
   res.sendFile(__dirname + `/public/${req.params.file}`);
 });
 
+// Refresh products
+function refreshProducts(){
+  io.sockets.emit("lista-productos", productos.getAll());
+}
 // Server up
 
 httpServer.listen(PORT, () => console.log("SERVER ON"));
@@ -62,8 +69,7 @@ httpServer.listen(PORT, () => console.log("SERVER ON"));
 const messages = [];
 
 io.on("connection", (socket) => {
-  console.log("Se conectó un nuevo usuario", socket.id);
- 
+   
   io.sockets.emit("lista-productos", productos.getAll());
 
   socket.emit("messages", messages);
